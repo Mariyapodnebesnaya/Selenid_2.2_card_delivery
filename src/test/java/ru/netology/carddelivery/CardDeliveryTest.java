@@ -7,17 +7,30 @@ import org.openqa.selenium.Keys;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CardDeliveryTest {
-    String generateDate(int days) {
+    private LocalDate getDate(int days) {
+        return LocalDate.now().plusDays(days);
+    }
+
+    private String generateDate(int days) {
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
-    ;
+    private String getExpectedDate(int days) {
+        var date = getDate(days);
+        String month = date.getMonth().getDisplayName(TextStyle.FULL_STANDALONE,
+                Locale.getDefault()).toLowerCase();
+        month = month.substring(0, 1).toUpperCase() + month.substring(1);
+        return month + " " + date.getYear();
+    }
 
     @BeforeEach
     void setupTest() {
@@ -135,4 +148,45 @@ public class CardDeliveryTest {
         $$("button").find(exactText("Забронировать")).click();
         $("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
+
+    @Test
+    void checkCompletionFieldCity() {
+        $("[data-test-id=city] input").setValue("Мо");
+        $$(".menu-item .menu-item__control").find(exactText("Кемерово")).click();
+        $("[data-test-id=city] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[data-test-id=city] input").setValue("Мо");
+        $$(".menu-item .menu-item__control").find(exactText("Майкоп")).click();
+        $("[data-test-id=city] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[data-test-id=city] input").setValue("Мо");
+        $$(".menu-item .menu-item__control").find(exactText("Москва")).click();
+        $("[data-test-id=city] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[data-test-id=city] input").setValue("Мо");
+        $$(".menu-item .menu-item__control").find(exactText("Симферополь")).click();
+        $("[data-test-id=city] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[data-test-id=city] input").setValue("Мо");
+        $$(".menu-item .menu-item__control").find(exactText("Смоленск")).click();
+        $("[data-test-id=city] input").doubleClick().sendKeys(Keys.BACK_SPACE);
+        $("[data-test-id=city] input").setValue("Мо");
+        $$(".menu-item .menu-item__control").find(exactText("Тамбов")).click();
+    }
+
+    @Test
+    void selectADateOneWeekAheadOfTheCurrentDate() {
+        int days = 7;
+        $("[data-test-id=city] input").setValue("Во");
+        $$(".menu-item .menu-item__control").find(exactText("Вологда")).click();
+        $("[data-test-id=date] input").click();
+        $(".calendar-input__calendar-wrapper").shouldBe(visible);
+        while (!$(".calendar__name").getText().equals(getExpectedDate(days))) {
+            $("div[class*=calendar__arrow_direction_right]:not([class*='calendar__arrow_double'])").click();
+        }
+        $(byText(String.valueOf(LocalDate.now().plusDays(days).getDayOfMonth()))).click();
+        $("[data-test-id=name] input").setValue("Ван-бух Иван");
+        $("[data-test-id=phone] input").setValue("+79998888888");
+        $("[data-test-id=agreement]").click();
+        $$("button").find(exactText("Забронировать")).click();
+        $(withText("Успешно!")).shouldBe(visible, Duration.ofMillis(11000));
+        $("[data-test-id=notification] .notification__content").shouldHave(text("Встреча успешно забронирована на " + generateDate(days)));
+    }
 }
+
