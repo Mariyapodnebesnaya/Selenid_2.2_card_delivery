@@ -176,6 +176,7 @@ public class CardDeliveryTest {
         $("[data-test-id=date] input").click();
         $(".calendar-input__calendar-wrapper").shouldBe(visible, Duration.ofSeconds(5));
         Assertions.assertEquals("Январь 2023", $(".calendar__name").getText());
+        Assertions.assertEquals("Февраль 2023", $(getExpectedDate(days)));
         while (!$(".calendar__name").getText().equals(getExpectedDate(days))) {
             String current = $(".calendar__name").getText();
             $("div[class*=calendar__arrow_direction_right]:not([class*='calendar__arrow_double'])").click();
