@@ -1,5 +1,6 @@
 package ru.netology.carddelivery;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -176,6 +177,7 @@ public class CardDeliveryTest {
         $$(".menu-item .menu-item__control").find(exactText("Вологда")).click();
         $("[data-test-id=date] input").click();
         $(".calendar-input__calendar-wrapper").shouldBe(visible, Duration.ofSeconds(5));
+        Assertions.assertEquals("Январь 2023", $(".calendar__name").getText());
         while (!$(".calendar__name").getText().equals(getExpectedDate(days))) {
             String current = $(".calendar__name").getText();
             $("div[class*=calendar__arrow_direction_right]:not([class*='calendar__arrow_double'])").click();
