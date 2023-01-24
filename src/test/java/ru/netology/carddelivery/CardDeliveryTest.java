@@ -11,7 +11,6 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 import static com.codeborne.selenide.Condition.*;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CardDeliveryTest {
@@ -182,7 +181,7 @@ public class CardDeliveryTest {
             $("div[class*=calendar__arrow_direction_right]:not([class*='calendar__arrow_double'])").click();
             $(".calendar__name").shouldNot(text(current), Duration.ofSeconds(5));
         }
-        $(byText(String.valueOf(LocalDate.now().plusDays(days).getDayOfMonth()))).click();
+//        $(byText(String.valueOf(LocalDate.now().plusDays(days).getDayOfMonth()))).click();
 //        $("[data-test-id=name] input").setValue("Ван-бух Иван");
 //        $("[data-test-id=phone] input").setValue("+79998888888");
 //        $("[data-test-id=agreement]").click();
