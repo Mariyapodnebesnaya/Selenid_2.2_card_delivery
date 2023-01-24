@@ -171,7 +171,7 @@ public class CardDeliveryTest {
 //
     @Test
     void selectADateOneWeekAheadOfTheCurrentDate() {
-        int days = 7;
+        int days = 10;
         $("[data-test-id=city] input").setValue("Во");
         $$(".menu-item .menu-item__control").find(exactText("Вологда")).click();
         $("[data-test-id=date] input").click();
